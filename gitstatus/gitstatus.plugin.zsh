@@ -390,6 +390,7 @@ function gitstatus_start() {
     function _gitstatus_cleanup_${ZSH_SUBSHELL}_${daemon_pid}() {
       emulate -L zsh
       setopt err_return no_unset
+      return
       local fname=${(%):-%N}
       local prefix=_gitstatus_cleanup_${ZSH_SUBSHELL}_
       [[ $fname == ${prefix}* ]] || return 0
