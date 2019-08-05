@@ -350,6 +350,8 @@ function gitstatus_start() {
 
     local cmd="
       echo \$\$
+      local sig
+      for sig in \$signals; do TRAP\$sig() { print -P '[%*] Received' SIG\${0#TRAP} >&2 }; done
       ${(q)daemon} $daemon_args
       if [[ \$? != (0|10) && \$? -le 128 &&
             -z ${(q)GITSTATUS_DAEMON:-} &&
@@ -359,7 +361,7 @@ function gitstatus_start() {
       echo -nE $'bye\x1f0\x1e'"
     local setsid=${commands[setsid]:-/usr/local/opt/util-linux/bin/setsid}
     [[ -f $setsid ]] && setsid=${(q)setsid} || setsid=
-    cmd="$setsid zsh -dfxc ${(q)cmd} &!"
+    cmd="$setsid zsh -Tdfxc ${(q)cmd} &!"
     # We use `zsh -c` instead of plain {} or () to work around bugs in zplug. It hangs on startup.
     # Double fork is to daemonize. Some macOS users had issues when gitstatusd was a child process
     # of the interactive zsh. For example, https://github.com/romkatv/powerlevel10k/issues/123
