@@ -147,6 +147,7 @@ function _p9k_declare() {
       (( set )) && typeset -g _$2=${(P)2} || typeset -g _$2=$3
       ;;
     -e)
+      local LC_ALL=C.UTF-8
       if (( set )); then
         local v=${(P)2}
         typeset -g _$2=${(g::)v}
@@ -329,6 +330,7 @@ _p9k_get_icon() {
       if [[ $_p9k_ret == $'\1'* ]]; then
         _p9k_ret=${_p9k_ret[2,-1]}
       else
+        local LC_ALL=C.UTF-8
         _p9k_ret=${(g::)_p9k_ret}
         [[ $_p9k_ret != $'\b'? ]] || _p9k_ret="%{$_p9k_ret%}"  # penance for past sins
       fi
@@ -549,6 +551,7 @@ _p9k_left_prompt_segment() {
 
     p+='${${_p9k_e:#00}:+${${_p9k_t[$_p9k_n]/'$ss'/$_p9k_ss}/'$s'/$_p9k_s}'
 
+    local LC_ALL=C.UTF-8
     _p9k_param $1 ICON_BEFORE_CONTENT ''
     if [[ $_p9k_ret != false ]]; then
       _p9k_param $1 PREFIX ''
@@ -749,6 +752,7 @@ _p9k_right_prompt_segment() {
 
     p+='${${_p9k_e:#00}:+${_p9k_t[$_p9k_n]/'$w'/$_p9k_w}'
 
+    local LC_ALL=C.UTF-8
     _p9k_param $1 ICON_BEFORE_CONTENT ''
     if [[ $_p9k_ret != true ]]; then
       _p9k_param $1 PREFIX ''
@@ -1087,6 +1091,7 @@ prompt_context() {
       if [[ -z $content ]]; then
         local var=POWERLEVEL9K_CONTEXT_${state}_TEMPLATE
         if (( $+parameters[$var] )); then
+          local LC_ALL=C.UTF-8
           content=${(P)var}
           content=${(g::)content}
         else
@@ -3508,6 +3513,7 @@ _p9k_init_params() {
   if [[ $parameters[POWERLEVEL9K_BATTERY_STAGES] == scalar ]]; then
     _p9k_declare -e POWERLEVEL9K_BATTERY_STAGES
   else
+    local LC_ALL=C.UTF-8
     _p9k_declare -a POWERLEVEL9K_BATTERY_STAGES --
     _POWERLEVEL9K_BATTERY_STAGES=("${(@g::)_POWERLEVEL9K_BATTERY_STAGES}")
   fi
@@ -3632,6 +3638,7 @@ _p9k_init_params() {
   _p9k_declare -i POWERLEVEL9K_VCS_STAGED_MAX_NUM 1
   _p9k_declare -i POWERLEVEL9K_VCS_UNSTAGED_MAX_NUM 1
   _p9k_declare -i POWERLEVEL9K_VCS_UNTRACKED_MAX_NUM 1
+  _p9k_declare -i POWERLEVEL9K_VCS_CONFLICTED_MAX_NUM 1
   _p9k_declare -i POWERLEVEL9K_VCS_COMMITS_AHEAD_MAX_NUM -1
   _p9k_declare -i POWERLEVEL9K_VCS_COMMITS_BEHIND_MAX_NUM -1
   _p9k_declare -b POWERLEVEL9K_DISABLE_GITSTATUS 0
@@ -3765,6 +3772,7 @@ _p9k_build_gap_post() {
 }
 
 _p9k_init_lines() {
+  local LC_ALL=C.UTF-8
   local -a left_segments=($_POWERLEVEL9K_LEFT_PROMPT_ELEMENTS)
   local -a right_segments=($_POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS)
 
@@ -4134,6 +4142,7 @@ _p9k_init() {
           -s $_POWERLEVEL9K_VCS_STAGED_MAX_NUM       \
           -u $_POWERLEVEL9K_VCS_UNSTAGED_MAX_NUM     \
           -d $_POWERLEVEL9K_VCS_UNTRACKED_MAX_NUM    \
+          -c $_POWERLEVEL9K_VCS_CONFLICTED_MAX_NUM   \
           -m $_POWERLEVEL9K_VCS_MAX_INDEX_SIZE_DIRTY \
           POWERLEVEL9K || _POWERLEVEL9K_DISABLE_GITSTATUS=1
       fi
@@ -4167,6 +4176,7 @@ _p9k_init() {
 
   if _p9k_segment_in_use dir; then
     if (( $+_POWERLEVEL9K_DIR_CLASSES )); then
+      local LC_ALL=C.UTF-8
       local -i i=3
       for ((; i <= $#_POWERLEVEL9K_DIR_CLASSES; i+=3)); do
         _POWERLEVEL9K_DIR_CLASSES[i]=${(g::)_POWERLEVEL9K_DIR_CLASSES[i]}
