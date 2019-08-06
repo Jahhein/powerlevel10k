@@ -390,13 +390,21 @@ function gitstatus_start() {
     function _gitstatus_cleanup_${ZSH_SUBSHELL}_${daemon_pid}() {
       emulate -L zsh
       setopt err_return no_unset
-      return
       local fname=${(%):-%N}
       local prefix=_gitstatus_cleanup_${ZSH_SUBSHELL}_
+      local nl=$'  \n'
+      >>${TMPDIR:-/tmp}/gitstatus.log echo -E - \
+        "[${(%):-%*} $$ $(exec sh -c 'echo $PPID'; true) $ZSH_SUBSHELL] zshexit hook $fname is called${(j::)${(@)funcfiletrace/#/$nl}}"
       [[ $fname == ${prefix}* ]] || return 0
       local -i daemon_pid=${fname#$prefix}
+      local nl=$'  \n'
+      >>${TMPDIR:-/tmp}/gitstatus.log echo -E - \
+        "[${(%):-%*} $$ $(exec sh -c 'echo $PPID'; true) $ZSH_SUBSHELL] zshexit hook $fname is killing $daemon_pid${(j::)${(@)funcfiletrace/#/$nl}}"
       kill -- -$daemon_pid &>/dev/null || true
     }
+    local nl=$'\n  '
+    >>${TMPDIR:-/tmp}/gitstatus.log echo -E - \
+      "[${(%):-%*} $$ $(exec sh -c 'echo $PPID'; true) $ZSH_SUBSHELL] installing zshexit hook _gitstatus_cleanup_${ZSH_SUBSHELL}_${daemon_pid}${(j::)${(@)funcfiletrace/#/$nl}}"
     add-zsh-hook zshexit _gitstatus_cleanup_${ZSH_SUBSHELL}_${daemon_pid}
 
     [[ $stderr_fd == -1 ]] || {
